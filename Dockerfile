@@ -4,7 +4,7 @@ FROM n8nio/n8n:latest
 # Switch to root to install packages
 USER root
 
-# Install Python, pip, and qpdf
+# Install Python, pip, and qpdf (system package)
 RUN apt-get update && \
     apt-get install -y python3 python3-pip qpdf && \
     pip3 install pypdf pdfplumber && \
