@@ -1,15 +1,21 @@
-# Use the official n8n Alpine image
-FROM n8nio/n8n:latest-alpine
+# Use a base image that has both Node.js and Python
+FROM node:18-bullseye
 
-# Switch to root to install packages
-USER root
+# Install Python and qpdf
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip qpdf && \
+    pip3 install pypdf pdfplumber && \
+    apt-get clean
 
-# Install Python, pip, and qpdf using apk (Alpine package manager)
-RUN apk add --no-cache python3 py3-pip qpdf && \
-    pip3 install pypdf pdfplumber
+# Install n8n globally via npm
+RUN npm install n8n -g
 
-# Switch back to the n8n user
-USER node
+# Set environment variables
+ENV N8N_BASIC_AUTH_ACTIVE=true \
+    N8N_SECURE_COOKIE=false
 
-# Keep the default entrypoint
-ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
+# Expose the default n8n port
+EXPOSE 5678
+
+# Start n8n
+CMD ["n8n", "start"]
