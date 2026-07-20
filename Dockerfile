@@ -1,14 +1,12 @@
-# Use the Debian-based n8n image
-FROM n8nio/n8n:debian
+# Use the official n8n Alpine image
+FROM n8nio/n8n:latest-alpine
 
 # Switch to root to install packages
 USER root
 
-# Install Python, pip, and qpdf using apt-get
-RUN apt-get update && \
-    apt-get install -y python3 python3-pip qpdf && \
-    pip3 install pypdf pdfplumber && \
-    apt-get clean
+# Install Python, pip, and qpdf using apk (Alpine package manager)
+RUN apk add --no-cache python3 py3-pip qpdf && \
+    pip3 install pypdf pdfplumber
 
 # Switch back to the n8n user
 USER node
